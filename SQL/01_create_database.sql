@@ -2,17 +2,20 @@
 SELECT
     b.Vorname,
     b.Nachname,
+
     k.bez 'Konto name',
     k.k_stand 'Kontostand'
 FROM benutzer_konto bk
 JOIN Benutzer b 
     ON b.b_id = bk.ben_id
+
 JOIN Konto k 
     ON bk.kon_id = k.k_id
     
 
 --ein Gemeinsamer Kontostand
 select sum(k.k_stand) 'ein Gemeinsamer Kontostand'  from konto k;
+
 
 
 -- überprüfen wir Transaktion + Kategorie
@@ -34,7 +37,7 @@ and t.date_zeit < '2026-07-01'
 order by t.date_zeit;*/
 
 
--- überprufen Einnahme und Ausgabe
+-- �berprufen Einnahme und Ausgabe
 
 SELECT
     t.summe,
