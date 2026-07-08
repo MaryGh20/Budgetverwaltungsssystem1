@@ -3,8 +3,7 @@ SELECT
     --b.b_id,
     b.Vorname,
     b.Nachname,
-    k.bez,
-    k.k_stand,
+    k.Bezeichnung,
     t.summe,
     t.date_zeit
     --t.Beschreibung
@@ -16,7 +15,7 @@ JOIN Konto k
 JOIN Transaktion t 
     ON k.k_id = t.konto_id;
 
--- überprüfen wir Transaktion + Kategorie
+-- �berpr�fen wir Transaktion + Kategorie
 
 SELECT
     t.trans_id,
@@ -29,7 +28,7 @@ JOIN art_transfer a
 JOIN Kategorie k
     ON k.kat_id = a.at_id;
 
--- überprufen Einnahme und Ausgabe
+-- �berprufen Einnahme und Ausgabe
 
 SELECT
     t.summe,
