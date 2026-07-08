@@ -3,7 +3,8 @@ SELECT
     --b.b_id,
     b.Vorname,
     b.Nachname,
-    k.k_id,
+    k.bez,
+    k.k_stand,
     t.summe,
     t.date_zeit
     --t.Beschreibung
