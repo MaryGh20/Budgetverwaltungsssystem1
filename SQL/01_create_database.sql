@@ -11,15 +11,56 @@ JOIN Benutzer b
 
 JOIN Konto k 
     ON bk.kon_id = k.k_id
-    
+    -----------------------------------------------------------
+    SELECT
+    k.bez 'Konto name',
+    k.k_stand 'Kontostand'
+    FROM Konto k
+      
 
 --ein Gemeinsamer Kontostand
 select sum(k.k_stand) 'ein Gemeinsamer Kontostand'  from konto k;
 
+----------------------------------TRANSACTION--------------------------------------
+--------------INNERE TRANSAKTION -------------------------
+-- 1. Transaktion explizit starten
+DECLARE @KontoID INT = 1;              -- Um welches Konto geht es? (K_id)
+DECLARE @Betrag DECIMAL(15,2) = 50.00; -- Wie viel Geld?
+DECLARE @ArtID INT = 2;                -- Transaktionsart (z.B. 2 = 'Ausgabe')
 
+BEGIN TRANSACTION;
 
+BEGIN TRY
+    -- Schritt A: Die Transaktion in die Tabelle "Transaktion" eintragen
+    -- (id_trans wird hier als IDENTITY/Autowert angenommen, Data_Zeit kriegt das aktuelle Datum)
+    INSERT INTO transaktion (date_zeit, Summe, Konto_id, Art_id)
+    VALUES (GETDATE(), @Betrag, @KontoID, @ArtID);
+    UPDATE konto 
+    SET konto.k_stand = konto.k_stand - @Betrag
+    WHERE  konto.k_id = @KontoID 
+
+   -- Wenn beide Befehle ohne Fehler geklappt haben: Speichern!
+
+    COMMIT TRANSACTION;
+    PRINT 'Transaktion erfolgreich gebucht und Kontostand aktualisiert.';
+
+    END TRY
+BEGIN CATCH
+    -- Falls irgendetwas schiefgeht (z.B. KontoID existiert nicht -> Foreign Key Error):
+    -- Alles komplett zurücksetzen!
+    ROLLBACK TRANSACTION;
+    
+    PRINT 'Fehler beim Buchen! Die Datenbank wurde zurückgesetzt.';
+    
+    -- Fehlerdetails anzeigen
+    SELECT 
+        ERROR_NUMBER() AS FehlerNummer,
+        ERROR_MESSAGE() AS FehlerText;
+END CATCH;
+
+---------------------------unten von Mariam-----------------------------------------
 -- überprüfen wir Transaktion + Kategorie
-set dateformat ydm;
+set dateformat ymd;
 SELECT
     t.date_zeit,
     a.art_trans_bez,
@@ -30,14 +71,14 @@ JOIN art_transfer a
     ON t.art_id = a.at_id
 JOIN Kategorie k
     ON k.kat_id = t.kategorie_id
-where month(t.date_zeit) = '06' --and year(t.date_zeit)='2026'
---Where t.date_zeit between '2026.06.01' and '2026.07.01'  
-/*where t.date_zeit >= '2026-06-01'
+--where month(t.date_zeit) = '06' and year(t.date_zeit)='2026'
+--Where t.date_zeit between '2026.06.01' and '2026.07.01';  
+where t.date_zeit >= '2026-06-01'
 and t.date_zeit < '2026-07-01'
-order by t.date_zeit;*/
+order by t.date_zeit desc;
 
 
--- �berprufen Einnahme und Ausgabe
+-- berprufen Einnahme und Ausgabe
 
 SELECT
     t.summe,
