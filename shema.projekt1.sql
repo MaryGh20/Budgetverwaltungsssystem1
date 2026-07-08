@@ -29,19 +29,11 @@ Konto_id int,
 art_id int,
 Primary key (trans_id), 
 Foreign key (Konto_id) references Konto (K_id),
-Foreign Key (Art_id) references Art_Transfer (A_id)
+Foreign Key (Art_id) references Art_Transfer(a_id)
 );
 
 create table Art_Transfer (
 A_id int primary key,
 Art_bez varchar(30)
-);
-
-create table Kategorie (
-Kat_id int,
-Name varchar(10),
-Art_id int,
-Primary key (Kat_id),
-Foreign key (Art_id) references Art_Transfer (A_id)
 );
 
