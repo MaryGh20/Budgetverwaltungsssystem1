@@ -37,15 +37,17 @@ date_zeit Datetime,
 summe Decimal(15,2),
 konto_id int,
 art_id int,
+kategorie_id int,
 Primary key (trans_id), 
 Foreign key (konto_id) references konto (k_id),
-Foreign Key (art_id) references art_transfer (at_id)
+Foreign Key (art_id) references art_transfer (at_id),
+Foreign Key (kategorie_id) references kategorie (kat_id)
 );
 
 
 create table kategorie (
 kat_id int,
-Name varchar(10),
+kat_name varchar(30),
 art_id int,
 Primary key (kat_id),
 Foreign key (art_id) references art_transfer (at_id)
