@@ -1,47 +1,52 @@
+drop table if exists transaktion;
+drop table if exists benutzer;
+drop table if exists konto;
+drop table if exists art_transfer;
+drop table if exists benutzer_konto;
+drop table if exists kategorie;
 
-
-create table Benutzer (
-B_id int identity primary key,
+create table benutzer (
+b_id int identity primary key,
 vorname varchar(15),
 nachname varchar(15)
 );
 
-
-create table Konto (
-K_id int primary key,
-Bezeichnung varchar(30),
-Kontostand Decimal (15,2)
+create table konto (
+k_id int primary key,
+bez varchar(30),
+k_stand Decimal (15,2)
 );
 
-create table Benutzer_konto (
-Benutzer_id int,
-Konto_id int,
-Primary key (Benutzer_id, Konto_id), 
-Foreign key (Benutzer_id) references Benutzer (B_id),
-Foreign Key (Konto_id) references Konto(K_id)
+create table art_transfer (
+at_id int primary key,
+art_trans_bez varchar(30)
+);
+
+create table benutzer_konto (
+bk_id int,
+bkonto_id int,
+Primary key (bk_id, bkonto_id), 
+Foreign key (bk_id) references Benutzer (b_id),
+Foreign Key (bkonto_id) references konto(k_id)
 );
 
 create table transaktion (
 trans_id int,
-Date_Zeit Datetime,
-Summe Decimal(15,2),
-Konto_id int,
+date_zeit Datetime,
+summe Decimal(15,2),
+konto_id int,
 art_id int,
 Primary key (trans_id), 
-Foreign key (Konto_id) references Konto (K_id),
-Foreign Key (Art_id) references Art_Transfer (A_id)
+Foreign key (konto_id) references konto (k_id),
+Foreign Key (art_id) references art_transfer (at_id)
 );
 
-create table Art_Transfer (
-A_id int primary key,
-Art_bez varchar(30)
-);
 
-create table Kategorie (
-Kat_id int,
+create table kategorie (
+kat_id int,
 Name varchar(10),
-Art_id int,
-Primary key (Kat_id),
-Foreign key (Art_id) references Art_Transfer (A_id)
+art_id int,
+Primary key (kat_id),
+Foreign key (art_id) references art_transfer (at_id)
 );
 
