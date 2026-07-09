@@ -24,9 +24,18 @@ select sum(k.k_stand) 'ein Gemeinsamer Kontostand'  from konto k;
 ----------------------------------TRANSACTION--------------------------------------
 --------------INNERE TRANSAKTION -------------------------
 -- 1. Transaktion explizit starten
+
 DECLARE @KontoID INT = 1;              -- Um welches Konto geht es? (K_id)
 DECLARE @Betrag DECIMAL(15,2) = 50.00; -- Wie viel Geld?
 DECLARE @ArtID INT = 2;                -- Transaktionsart (z.B. 2 = 'Ausgabe')
+DECLARE @ArtType INT = (
+select DISTINCT art_transfer.art_wert from art_transfer  --statt art_transfer.at_id schreib  statt art_transfer.zeichen
+join transaktion t on t.art_id=art_transfer.at_id
+where t.konto_id =1-- @KontoID 
+);
+--DECLARE @ArtType INT =-1
+select konto.k_stand from konto where konto.k_id=@KontoID
+;
 
 BEGIN TRANSACTION;
 
@@ -36,7 +45,7 @@ BEGIN TRY
     INSERT INTO transaktion (date_zeit, Summe, Konto_id, Art_id)
     VALUES (GETDATE(), @Betrag, @KontoID, @ArtID);
     UPDATE konto 
-    SET konto.k_stand = konto.k_stand - @Betrag
+    SET konto.k_stand = konto.k_stand + @Betrag*@ArtType
     WHERE  konto.k_id = @KontoID 
 
    -- Wenn beide Befehle ohne Fehler geklappt haben: Speichern!
@@ -57,7 +66,7 @@ BEGIN CATCH
         ERROR_NUMBER() AS FehlerNummer,
         ERROR_MESSAGE() AS FehlerText;
 END CATCH;
-
+select konto.k_stand from konto where konto.k_id=@KontoID
 ---------------------------unten von Mariam-----------------------------------------
 -- überprüfen wir Transaktion + Kategorie
 set dateformat ymd;

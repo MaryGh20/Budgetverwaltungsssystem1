@@ -22,6 +22,20 @@ create table art_transfer (
 at_id int identity primary key,
 art_trans_bez varchar(30)
 );
+-----------------------------------------------------------------------------
+alter table art_transfer ADD 
+art_wert int;
+select * from art_transfer
+
+begin try 
+update art_transfer set art_transfer.art_wert = 1 
+where art_transfer.art_trans_bez = 'Einnahme'
+update art_transfer set art_transfer.art_wert = -1 
+where art_transfer.art_trans_bez = 'Ausgabe'
+
+
+
+----------------------------------------------------------------------------------
 
 create table benutzer_konto (
 ben_id int,
