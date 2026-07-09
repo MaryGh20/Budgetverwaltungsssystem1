@@ -74,8 +74,6 @@ BEGIN CATCH
 END CATCH;
 select konto.k_stand from konto where konto.k_id=@KontoID
 
--------------------------TRANSAKTION ZWISCHEN INNERE KONTO------------------------------------------------
-
 
 ---------------------------unten von Mariam-----------------------------------------
 -- überprüfen wir Transaktion + Kategorie
