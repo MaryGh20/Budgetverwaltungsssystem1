@@ -35,8 +35,8 @@ INSERT INTO benutzer_konto VALUES
 (3, 8);
 
 insert into art_transfer values
-('Einnahme'),
-('Ausgabe');
+('Einnahme', 1),
+('Ausgabe', (-1));
 
 
 INSERT INTO kategorie VALUES

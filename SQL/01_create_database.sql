@@ -141,3 +141,24 @@ JOIN Kategorie kat
 WHERE t.summe < 0
 GROUP BY kat.Name;
 
+---------------------------------------Aida-------------------------------------------------
+
+SELECT
+   b.vorname,
+   b.nachname,
+   SUM(t.summe) AS ausgaben_juni
+FROM benutzer b
+JOIN benutzer_konto bk
+   ON b.b_id = bk.ben_id
+JOIN konto k
+   ON bk.kon_id = k.k_id
+JOIN transaktion t
+   ON k.k_id = t.konto_id
+JOIN art_transfer a
+   ON t.art_id = a.at_id
+WHERE b.vorname = 'John'
+ AND b.nachname = 'Cena'
+ AND a.art_trans_bez = 'Ausgabe'
+ AND t.date_zeit >= '20260601'
+ AND t.date_zeit < '20260701'
+GROUP BY b.vorname, b.nachname;

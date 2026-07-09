@@ -31,7 +31,7 @@ begin try
 update art_transfer set art_transfer.art_wert = 1 
 where art_transfer.art_trans_bez = 'Einnahme'
 update art_transfer set art_transfer.art_wert = -1 
-where art_transfer.art_trans_bez = 'Ausgabe'
+where art_transfer.art_trans_bez = 'Ausgabe';
 
 
 
@@ -61,6 +61,4 @@ art_id int,
 kategorie_id int, 
 Foreign key (konto_id) references konto (k_id),
 Foreign Key (art_id) references art_transfer (at_id),
-Foreign Key (kategorie_id) references kategorie (kat_id)
-);
-
+Foreign Key (kategorie_id) references kategorie (kat_id));
