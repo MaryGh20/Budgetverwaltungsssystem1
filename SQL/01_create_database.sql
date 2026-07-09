@@ -75,72 +75,10 @@ END CATCH;
 select konto.k_stand from konto where konto.k_id=@KontoID
 
 
----------------------------unten von Mariam-----------------------------------------
--- überprüfen wir Transaktion + Kategorie
-set dateformat ymd;
-SELECT
-    t.date_zeit,
-    a.art_trans_bez,
-    k.kat_name Kategorie,
-    t.summe
-FROM Transaktion t
-JOIN art_transfer a
-    ON t.art_id = a.at_id
-JOIN Kategorie k
-    ON k.kat_id = t.kategorie_id
---where month(t.date_zeit) = '06' and year(t.date_zeit)='2026'
---Where t.date_zeit between '2026.06.01' and '2026.07.01';  
-where t.date_zeit >= '2026-06-01'
-and t.date_zeit < '2026-07-01'
-order by t.date_zeit desc;
-
-
--- berprufen Einnahme und Ausgabe
-
-SELECT
-    t.summe,
-    t.date_zeit,
-    a.art_trans_bez AS TransferArt
-FROM Transaktion t
-JOIN Art_Transfer a
-    ON t.trans_id = a.art_trans_bez;
-
---Budgetbericht
-SELECT
-    b.Vorname,
-    b.Nachname,
-    k.k_id,
-    t.summe,
-    a.art_trans_bez,
-    kat.Name,
-    t.date_zeit
-FROM Benutzer b
-JOIN Benutzer_Konto bk
-    ON b.b_id = bk.bkonto_id
-JOIN Konto k
-    ON bk.bkonto_id = k.k_id
-JOIN Transaktion t
-    ON k.k_id = t.konto_id
-JOIN Art_Transfer a
-    ON t.trans_id = a.art_trans_bez
-JOIN Kategorie kat
-    ON t.art_id = kat.art_id;
-
---Die Kosten berechnen
-
-SELECT
-    kat.Name,
-    SUM(t.summe)
-FROM Transaktion t
-JOIN Art_Transfer a
-    ON t.trans_id = a.art_trans_bez
-JOIN Kategorie kat
-    ON t.art_id = kat.art_id
-WHERE t.summe < 0
-GROUP BY kat.Name;
 
 ---------------------------------------Aida-------------------------------------------------
-
+DECLARE @Benutzer_NName VARCHAR(15) = 'Cena'
+DECLARE @Benutzer_VName VARCHAR(15) = 'John'
 SELECT
    b.vorname,
    b.nachname,
@@ -154,9 +92,9 @@ JOIN transaktion t
    ON k.k_id = t.konto_id
 JOIN art_transfer a
    ON t.art_id = a.at_id
-WHERE b.vorname = 'John'
- AND b.nachname = 'Cena'
+WHERE b.vorname = @Benutzer_VName
+ AND b.nachname = @Benutzer_NName
  AND a.art_trans_bez = 'Ausgabe'
- AND t.date_zeit >= '20260601'
- AND t.date_zeit < '20260701'
+ AND t.date_zeit >= '20260701'
+ AND t.date_zeit < '20260801'
 GROUP BY b.vorname, b.nachname;
