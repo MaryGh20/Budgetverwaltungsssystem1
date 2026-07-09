@@ -24,15 +24,21 @@ select sum(k.k_stand) 'ein Gemeinsamer Kontostand'  from konto k;
 ----------------------------------TRANSACTION--------------------------------------
 --------------INNERE TRANSAKTION -------------------------
 -- 1. Transaktion explizit starten
-
 DECLARE @KontoID INT = 1;              -- Um welches Konto geht es? (K_id)
-DECLARE @Betrag DECIMAL(15,2) = 50.00; -- Wie viel Geld?
-DECLARE @ArtID INT = 2;                -- Transaktionsart (z.B. 2 = 'Ausgabe')
+DECLARE @KategorieID INT = 4;
+DECLARE @Betrag DECIMAL(15,2) = 500.00; -- Wie viel Geld?
+
+DECLARE @ArtID INT = (                         -- Transaktionsart (z.B. 2 = 'Ausgabe')
+                       select k.art_id from kategorie k where k.kat_id=@KategorieID
+                      );              
+
+                
 DECLARE @ArtType INT = (
-select DISTINCT art_transfer.art_wert from art_transfer  --statt art_transfer.at_id schreib  statt art_transfer.zeichen
-join transaktion t on t.art_id=art_transfer.at_id
-where t.konto_id =1-- @KontoID 
-);
+                        select DISTINCT art_transfer.art_wert from art_transfer  --statt art_transfer.at_id schreib  statt art_transfer.zeichen
+                        join transaktion t on t.art_id=art_transfer.at_id
+                        --where t.konto_id =1-- @KontoID
+                        where t.art_id = @ArtID
+                        );
 --DECLARE @ArtType INT =-1
 select konto.k_stand from konto where konto.k_id=@KontoID
 ;
@@ -42,8 +48,8 @@ BEGIN TRANSACTION;
 BEGIN TRY
     -- Schritt A: Die Transaktion in die Tabelle "Transaktion" eintragen
     -- (id_trans wird hier als IDENTITY/Autowert angenommen, Data_Zeit kriegt das aktuelle Datum)
-    INSERT INTO transaktion (date_zeit, Summe, Konto_id, Art_id)
-    VALUES (GETDATE(), @Betrag, @KontoID, @ArtID);
+    INSERT INTO transaktion (date_zeit, Summe, Konto_id, Art_id, kategorie_id)
+    VALUES (GETDATE(), @Betrag, @KontoID, @ArtID, @KategorieID);
     UPDATE konto 
     SET konto.k_stand = konto.k_stand + @Betrag*@ArtType
     WHERE  konto.k_id = @KontoID 
@@ -67,6 +73,10 @@ BEGIN CATCH
         ERROR_MESSAGE() AS FehlerText;
 END CATCH;
 select konto.k_stand from konto where konto.k_id=@KontoID
+
+-------------------------TRANSAKTION ZWISCHEN INNERE KONTO------------------------------------------------
+
+
 ---------------------------unten von Mariam-----------------------------------------
 -- überprüfen wir Transaktion + Kategorie
 set dateformat ymd;
